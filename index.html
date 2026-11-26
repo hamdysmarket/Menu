@@ -3,133 +3,363 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hamdy's African Market</title>
+    <title>Hamdy's African Market — Menu</title>
     <style>
         /* --- THEME COLORS & FONTS --- */
         :root {
-            --primary: #D2691E; /* Chocolate/Earthy Orange */
-            --secondary: #006400; /* Deep Green */
-            --bg-color: #FFF8E7; /* Light Beige */
-            --text-color: #333;
+            --primary: #D2691E;      /* Chocolate / Earthy Orange */
+            --primary-dark: #b05515;
+            --secondary: #006400;    /* Deep Green */
+            --secondary-dark: #004b00;
+            --whatsapp: #25D366;
+            --sms: #007AFF;
+            --bg-color: #FFF8E7;     /* Light Beige */
+            --card-bg: #FFFFFF;
+            --text-color: #2b2b2b;
+            --muted-text: #5a5a5a;
         }
 
+        * { box-sizing: border-box; }
+
         body {
-            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             margin: 0;
-            padding: 0;
+            padding: 0 0 90px 0;
             background-color: var(--bg-color);
             color: var(--text-color);
+            line-height: 1.5;
         }
 
         /* --- HEADER --- */
         header {
             background-color: var(--secondary);
             color: white;
-            padding: 2rem 1rem;
+            padding: 1.75rem 1rem;
             text-align: center;
         }
+        header h1 { margin: 0; font-size: 2rem; letter-spacing: 0.3px; }
+        header p { margin: 8px 0 0; font-style: italic; opacity: 0.92; font-size: 1rem; }
 
-        header h1 { margin: 0; font-size: 2.5rem; }
-        header p { margin-top: 10px; font-style: italic; opacity: 0.9; }
-
-        /* --- NAVIGATION --- */
+        /* --- STICKY NAVIGATION --- */
         nav {
             background-color: #222;
-            position: sticky; /* Keeps nav visible when scrolling */
+            position: sticky;
             top: 0;
             text-align: center;
-            padding: 1rem;
-            z-index: 1000;
+            padding: 0.75rem 0.5rem;
+            z-index: 900;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
         }
         nav a {
             color: white;
             text-decoration: none;
-            font-weight: bold;
-            margin: 0 15px;
-            font-size: 1.1rem;
+            font-weight: 600;
+            font-size: 1rem;
         }
         nav a:hover { color: var(--primary); }
 
         /* --- LAYOUT --- */
         .container {
-            max-width: 900px;
-            margin: 2rem auto;
+            max-width: 960px;
+            margin: 1.5rem auto;
             padding: 0 1rem;
         }
 
         .section-title {
             color: var(--secondary);
             border-bottom: 2px solid var(--primary);
-            padding-bottom: 10px;
-            margin-bottom: 20px;
+            padding-bottom: 8px;
+            margin: 1.75rem 0 1rem;
+            font-size: 1.4rem;
+        }
+
+        /* --- SEARCH & CATEGORY FILTERS --- */
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 1rem;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 1rem;
+            background: white;
+        }
+        .search-input:focus {
+            outline: none;
+            border-color: var(--secondary);
+        }
+
+        .filter-bar {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+        }
+
+        .filter-btn {
+            background: white;
+            color: var(--text-color);
+            border: 1px solid #d4c8b0;
+            padding: 8px 14px;
+            border-radius: 999px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .filter-btn.active {
+            background: var(--secondary);
+            color: white;
+            border-color: var(--secondary);
         }
 
         /* --- MENU GRID --- */
         .menu-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+            gap: 16px;
         }
 
         .menu-card {
-            background: white;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 15px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            background: var(--card-bg);
+            border: 1px solid #e2d8c5;
+            border-radius: 10px;
+            padding: 16px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
         }
 
+        .menu-card h3 {
+            margin: 0 0 6px;
+            font-size: 1.15rem;
+            color: #1a1a1a;
+        }
+
+        .menu-card p {
+            margin: 0 0 12px;
+            font-size: 0.92rem;
+            color: var(--muted-text);
+        }
+
+        .card-footer {
+            margin-top: auto;
+        }
+
+        .option-select {
+            width: 100%;
+            padding: 8px 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 0.92rem;
+            background-color: #fafafa;
+        }
+
+        .price-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+
         .price {
             color: var(--primary);
-            font-weight: bold;
+            font-weight: 700;
             font-size: 1.2rem;
-            margin: 10px 0;
         }
 
         button.add-btn {
             background-color: var(--primary);
             color: white;
             border: none;
-            padding: 10px;
-            border-radius: 4px;
+            padding: 10px 16px;
+            border-radius: 6px;
             cursor: pointer;
-            font-weight: bold;
-            width: 100%;
+            font-weight: 700;
+            font-size: 0.95rem;
+            transition: background-color 0.15s;
         }
-        button.add-btn:hover { background-color: #b05515; }
+        button.add-btn:hover { background-color: var(--primary-dark); }
+        button.add-btn.added { background-color: var(--secondary); }
 
-        /* --- CART FLOATING BUTTON --- */
+        /* --- FLOATING CART BAR --- */
         #cart-float {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
+            bottom: 18px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: calc(100% - 32px);
+            max-width: 520px;
             background-color: var(--secondary);
             color: white;
-            padding: 15px 25px;
+            padding: 14px 20px;
             border-radius: 50px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            box-shadow: 0 6px 18px rgba(0,0,0,0.28);
+            cursor: pointer;
+            font-weight: 700;
+            display: none;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 950;
+            font-size: 1rem;
+        }
+
+        /* --- CART MODAL / DRAWER --- */
+        .modal-backdrop {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.55);
+            z-index: 1000;
+            justify-content: center;
+            align-items: flex-end;
+        }
+        .modal-backdrop.open { display: flex; }
+
+        .cart-drawer {
+            background: white;
+            width: 100%;
+            max-width: 560px;
+            max-height: 90vh;
+            border-radius: 16px 16px 0 0;
+            padding: 20px;
+            overflow-y: auto;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.25);
+        }
+
+        @media (min-width: 600px) {
+            .modal-backdrop { align-items: center; }
+            .cart-drawer { border-radius: 14px; }
+        }
+
+        .drawer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 12px;
+            margin-bottom: 14px;
+        }
+        .drawer-header h2 { margin: 0; color: var(--secondary); font-size: 1.3rem; }
+        .close-btn {
+            background: #eee;
+            border: none;
+            border-radius: 50%;
+            width: 34px;
+            height: 34px;
+            font-size: 1.2rem;
             cursor: pointer;
             font-weight: bold;
-            display: none; /* Hidden until items added */
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #f0f0f0;
+            gap: 10px;
+        }
+        .cart-item-info { flex: 1; }
+        .cart-item-title { font-weight: 700; font-size: 0.98rem; }
+        .cart-item-opt { font-size: 0.85rem; color: var(--muted-text); }
+
+        .qty-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .qty-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            background: #f9f9f9;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .order-fields {
+            margin-top: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .order-fields input, .order-fields textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            font-family: inherit;
+        }
+
+        .cart-summary {
+            display: flex;
+            justify-content: space-between;
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin: 16px 0;
+            padding-top: 10px;
+            border-top: 2px solid #eee;
+        }
+
+        .checkout-buttons {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+
+        .send-btn {
+            border: none;
+            border-radius: 8px;
+            padding: 13px 16px;
+            font-size: 1rem;
+            font-weight: 700;
+            color: white;
+            cursor: pointer;
+            text-align: center;
+        }
+        .btn-whatsapp { background-color: #1da851; }
+        .btn-sms { background-color: var(--sms); }
+        .btn-email { background-color: var(--primary); }
+        .btn-copy {
+            background-color: #f1f1f1;
+            color: #333;
+            border: 1px solid #ccc;
+            font-size: 0.9rem;
+            padding: 10px;
         }
 
         /* --- HOURS & INFO --- */
         .info-box {
             background: white;
             padding: 20px;
-            border-radius: 8px;
+            border-radius: 10px;
             border-left: 5px solid var(--primary);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
         }
+        .info-box a { color: var(--secondary); font-weight: 600; text-decoration: none; }
+        .info-box ul { padding-left: 20px; margin: 8px 0 0; }
 
         footer {
             background-color: #222;
-            color: #aaa;
+            color: #bbb;
             text-align: center;
             padding: 20px;
             margin-top: 40px;
+            font-size: 0.9rem;
         }
     </style>
 </head>
@@ -143,47 +373,32 @@
     <nav>
         <a href="#menu">Menu</a>
         <a href="#hours">Location & Hours</a>
+        <a href="#" onclick="openCart(); return false;">View Order (<span id="nav-count">0</span>)</a>
     </nav>
 
     <div id="menu" class="container">
-        <h2 class="section-title">Order Online</h2>
-        
-        <div class="menu-grid">
-            <div class="menu-card">
-                <h3>Jollof Rice & Chicken</h3>
-                <p>Spicy aromatic rice served with roasted chicken and fried plantains.</p>
-                <div class="price">$14.00</div>
-                <button class="add-btn" onclick="addToCart('Jollof Rice', 14.00)">Add to Order</button>
-            </div>
-
-            <div class="menu-card">
-                <h3>Fufu & Egusi Soup</h3>
-                <p>Ground melon seed stew with spinach and beef, served with pounded yam.</p>
-                <div class="price">$16.50</div>
-                <button class="add-btn" onclick="addToCart('Egusi Soup', 16.50)">Add to Order</button>
-            </div>
-
-            <div class="menu-card">
-                <h3>Meat Pie (2 pcs)</h3>
-                <p>Flaky pastry filled with seasoned ground beef and vegetables.</p>
-                <div class="price">$7.00</div>
-                <button class="add-btn" onclick="addToCart('Meat Pie', 7.00)">Add to Order</button>
-            </div>
-
-            <div class="menu-card">
-                <h3>Goat Meat Pepper Soup</h3>
-                <p>Hot and spicy broth with tender goat meat and traditional spices.</p>
-                <div class="price">$12.00</div>
-                <button class="add-btn" onclick="addToCart('Pepper Soup', 12.00)">Add to Order</button>
+        <div class="controls">
+            <input type="text" id="search-box" class="search-input" placeholder="Search dishes (e.g., Jollof, Waakye, Plantains, Sobolo)..." oninput="renderMenu()">
+            <div class="filter-bar" id="filter-bar">
+                <button class="filter-btn active" onclick="setCategory('All', this)">All Items</button>
+                <button class="filter-btn" onclick="setCategory('Main Dishes', this)">Main Dishes</button>
+                <button class="filter-btn" onclick="setCategory('Side Dishes & Add-ons', this)">Side Dishes & Add-ons</button>
+                <button class="filter-btn" onclick="setCategory('Drinks and Beverages', this)">Drinks & Beverages</button>
             </div>
         </div>
+
+        <div id="menu-container"></div>
     </div>
 
     <div id="hours" class="container">
-        <h2 class="section-title">Hours & Location</h2>
+        <h2 class="section-title">Location & Hours</h2>
         <div class="info-box">
-            <p><strong>Address:</strong><br>19121 Maple Valley Cir, Hagerstown, MS 21742</p>
-            <p><strong>Phone:</strong><br>(631) 835-8953</p>
+            <p><strong>Address:</strong><br>
+            <a href="https://maps.google.com/?q=19121+Maple+Valley+Cir,+Hagerstown,+MD+21742" target="_blank" rel="noopener">
+                19121 Maple Valley Cir, Hagerstown, MD 21742
+            </a></p>
+            <p><strong>Phone / Text / WhatsApp:</strong><br>
+            <a href="tel:+16318358953">(631) 835-8953</a></p>
             <hr>
             <p><strong>Opening Hours:</strong></p>
             <ul>
@@ -194,55 +409,444 @@
         </div>
     </div>
 
-    <div id="cart-float" onclick="checkout()">
-        Cart: <span id="cart-count">0</span> items ($<span id="cart-total">0</span>)
+    <!-- Floating Bottom Cart Bar -->
+    <div id="cart-float" onclick="openCart()">
+        <span>View Order (<span id="cart-count">0</span> items)</span>
+        <span>$<span id="cart-total">0.00</span> &rarr;</span>
+    </div>
+
+    <!-- Slide-Up Cart Modal -->
+    <div id="cart-modal" class="modal-backdrop" onclick="closeCartOnBackdrop(event)">
+        <div class="cart-drawer">
+            <div class="drawer-header">
+                <h2>Your Order</h2>
+                <button class="close-btn" onclick="closeCart()" aria-label="Close">&times;</button>
+            </div>
+
+            <div id="cart-items-list"></div>
+
+            <div class="order-fields">
+                <input type="text" id="cust-name" placeholder="Your Name (Required for pickup)">
+                <textarea id="cust-notes" rows="2" placeholder="Special instructions (e.g., extra spicy, pickup time)..."></textarea>
+            </div>
+
+            <div class="cart-summary">
+                <span>Estimated Total:</span>
+                <span>$<span id="modal-total">0.00</span></span>
+            </div>
+
+            <div class="checkout-buttons">
+                <button class="send-btn btn-whatsapp" onclick="sendOrder('whatsapp')">Send Order via WhatsApp</button>
+                <button class="send-btn btn-sms" onclick="sendOrder('sms')">Send Order via SMS Text</button>
+                <button class="send-btn btn-email" onclick="sendOrder('email')">Send Order via Email</button>
+                <button class="send-btn btn-copy" onclick="copyOrderText()">Copy Order Summary to Clipboard</button>
+            </div>
+        </div>
     </div>
 
     <footer>
-        <p>&copy; 2025 Hamdy's African Market</p>
+        <p>&copy; 2026 Hamdy's African Market • Hagerstown, MD</p>
     </footer>
 
     <script>
-        let cart = [];
-        let total = 0;
+        // ============================================================
+        // BUSINESS CONTACT SETTINGS
+        // ============================================================
+        const STORE_PHONE = "16318358953"; // Country code + 10-digit number
+        const STORE_EMAIL = "hamdiya83@gmail.com";
 
-        function addToCart(item, price) {
-            // Add item to the list
-            cart.push({ item, price });
-            total += price;
+        // ============================================================
+        // MENU DATA — Add, edit, or remove items below anytime!
+        // ============================================================
+        const MENU_ITEMS = [
+            // --- MAIN DISHES ---
+            {
+                id: "jollof",
+                category: "Main Dishes",
+                name: "Jollof Rice",
+                description: "Spiced tomato rice with a choice of chicken, fish, beef, or goat meat",
+                price: 25.00,
+                options: ["Chicken", "Fish", "Beef", "Goat Meat"]
+            },
+            {
+                id: "waakye",
+                category: "Main Dishes",
+                name: "Waakye",
+                description: "Ghanaian-style rice and beans with spaghetti, stew, boiled egg with choice of chicken, fish, beef, or goat meat",
+                price: 25.00,
+                options: ["Chicken", "Fish", "Beef", "Goat Meat"]
+            },
+            {
+                id: "spaghetti-jollof",
+                category: "Main Dishes",
+                name: "Spaghetti Jollof",
+                description: "Jollof-styled spaghetti (vermicelli)",
+                price: 25.00
+            },
+            {
+                id: "kontomire",
+                category: "Main Dishes",
+                name: "White Rice and Kontomire",
+                description: "Steamed white rice served with spinach stew with choice of fish, beef, or goat meat",
+                price: 20.00,
+                options: ["Fish", "Beef", "Goat Meat"]
+            },
+            {
+                id: "banku",
+                category: "Main Dishes",
+                name: "Banku with Fish",
+                description: "Fermented corn and cassava dough balls served with spicy pepper stew and fried or grilled fish",
+                price: 25.00,
+                options: ["Fried Fish", "Grilled Fish"]
+            },
+            {
+                id: "kenkey",
+                category: "Main Dishes",
+                name: "Kenkey with Fish",
+                description: "Fermented corn and cassava dough wrapped in corn husk served with spicy pepper stew and fried or grilled fish",
+                price: 25.00,
+                options: ["Fried Fish", "Grilled Fish"]
+            },
+            {
+                id: "fufu",
+                category: "Main Dishes",
+                name: "Fufu (Pounded Yam)",
+                description: "Pounded/mashed yam or cassava and plantain dough served with peanut or light soup and fish or meat",
+                price: 25.00,
+                options: ["Peanut Soup - Meat", "Peanut Soup - Fish", "Light Soup - Meat", "Light Soup - Fish"]
+            },
+            {
+                id: "tuo-zaafi",
+                category: "Main Dishes",
+                name: "Tuo Zaafi (TZ)",
+                description: "Corned dough balls served with jute leave (ayoyo) stew and choice of beef or goat meat",
+                price: 25.00,
+                options: ["Beef", "Goat Meat"]
+            },
+            {
+                id: "rice-balls",
+                category: "Main Dishes",
+                name: "Rice Balls",
+                description: "Soft rice balls served with peanut butter soup and a choice of beef or goat meat",
+                price: 25.00,
+                options: ["Beef", "Goat Meat"]
+            },
 
-            // Update the display
-            updateCartDisplay();
+            // --- SIDE DISHES & ADD-ONS ---
+            {
+                id: "plantains-fish",
+                category: "Side Dishes & Add-ons",
+                name: "Fried Plantains and Fish",
+                description: "Golden sweet plantains, lightly seasoned and beans stew with fish",
+                price: 20.00
+            },
+            {
+                id: "meat-pie",
+                category: "Side Dishes & Add-ons",
+                name: "Meat Pie",
+                description: "Baked flour dough filled with ground beef, onions, garlic, potatoes, and green pepper",
+                price: 4.00
+            },
+            {
+                id: "burkina",
+                category: "Side Dishes & Add-ons",
+                name: "Burkina (Degue)",
+                description: "Ground millet mixed with fermented milk and yoghurt flavored with nutmeg and other spices",
+                price: 5.00
+            },
+            {
+                id: "puff-puff",
+                category: "Side Dishes & Add-ons",
+                name: "Puff Puff (3 balls)",
+                description: "Deep-fried dough ball, crispy on the outside and soft on the inside",
+                price: 4.00
+            },
+            {
+                id: "shito-32",
+                category: "Side Dishes & Add-ons",
+                name: "Shito (32 oz Bottle)",
+                description: "Spicy pepper stew with shrimp, tomato sauce, and spices",
+                price: 30.00
+            },
+            {
+                id: "shito-16",
+                category: "Side Dishes & Add-ons",
+                name: "Shito (16 oz Bottle)",
+                description: "Spicy pepper stew with shrimp, tomato sauce, and spices",
+                price: 15.00
+            },
+
+            // --- DRINKS AND BEVERAGES ---
+            {
+                id: "sobolo",
+                category: "Drinks and Beverages",
+                name: "Sobolo Drink",
+                description: "Hibiscus flower iced tea with ginger, pineapple, and cloves",
+                price: 5.00
+            },
+            {
+                id: "ginger-drink",
+                category: "Drinks and Beverages",
+                name: "Ginger Drink (Hausa Beer)",
+                description: "Ginger juice with lemon, cloves, and spices",
+                price: 5.00
+            },
+            {
+                id: "pineapple-juice",
+                category: "Drinks and Beverages",
+                name: "Pineapple Juice",
+                description: "Freshly squeezed pineapple juice, ginger, and lemon juice",
+                price: 5.00
+            },
+            {
+                id: "watermelon-juice",
+                category: "Drinks and Beverages",
+                name: "Watermelon Juice",
+                description: "Blended water melon juice, lime, spices, with optional mint",
+                price: 5.00,
+                options: ["With Mint", "No Mint"]
+            },
+            {
+                id: "malt",
+                category: "Drinks and Beverages",
+                name: "Malt Beverage",
+                description: "Non-alcoholic West African favorite",
+                price: 3.00
+            },
+            {
+                id: "water-soda",
+                category: "Drinks and Beverages",
+                name: "Bottled Water / Soda",
+                description: "Local and international varieties",
+                price: 1.00,
+                options: ["Bottled Water", "Soda"]
+            }
+        ];
+
+        // ============================================================
+        // APP LOGIC
+        // ============================================================
+        let currentCategory = "All";
+        let cart = []; // Each item: { key, name, option, price, qty }
+
+        function setCategory(category, btn) {
+            currentCategory = category;
+            document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+            btn.classList.add("active");
+            renderMenu();
         }
 
-        function updateCartDisplay() {
-            const floatBtn = document.getElementById('cart-float');
-            const countSpan = document.getElementById('cart-count');
-            const totalSpan = document.getElementById('cart-total');
+        function renderMenu() {
+            const container = document.getElementById("menu-container");
+            const query = document.getElementById("search-box").value.trim().toLowerCase();
 
-            // Show button if we have items
-            if (cart.length > 0) {
-                floatBtn.style.display = 'block';
+            const filtered = MENU_ITEMS.filter(item => {
+                const matchesCat = currentCategory === "All" || item.category === currentCategory;
+                const matchesSearch = !query ||
+                    item.name.toLowerCase().includes(query) ||
+                    item.description.toLowerCase().includes(query);
+                return matchesCat && matchesSearch;
+            });
+
+            if (filtered.length === 0) {
+                container.innerHTML = `<p style="text-align:center; padding: 2rem; color: #666;">No matching dishes found.</p>`;
+                return;
             }
 
-            countSpan.innerText = cart.length;
-            totalSpan.innerText = total.toFixed(2);
-        }
+            // Group by category in display order
+            const categories = ["Main Dishes", "Side Dishes & Add-ons", "Drinks and Beverages"];
+            let html = "";
 
-        function checkout() {
-            if (cart.length === 0) return;
+            categories.forEach(cat => {
+                const catItems = filtered.filter(item => item.category === cat);
+                if (catItems.length === 0) return;
 
-            // 1. Create a text summary of the order
-            let orderText = "I would like to place an order:%0D%0A"; // %0D%0A is a line break
-            cart.forEach(orderItem => {
-                orderText += `- ${orderItem.item} ($${orderItem.price})%0D%0A`;
+                html += `<h2 class="section-title">${cat}</h2><div class="menu-grid">`;
+                catItems.forEach(item => {
+                    const optionHtml = item.options
+                        ? `<select id="opt-${item.id}" class="option-select">
+                             ${item.options.map(opt => `<option value="${opt}">${opt}</option>`).join("")}
+                           </select>`
+                        : "";
+
+                    html += `
+                        <div class="menu-card">
+                            <div>
+                                <h3>${item.name}</h3>
+                                <p>${item.description}</p>
+                            </div>
+                            <div class="card-footer">
+                                ${optionHtml}
+                                <div class="price-row">
+                                    <span class="price">$${item.price.toFixed(2)}</span>
+                                    <button class="add-btn" id="btn-${item.id}" onclick="addToCart('${item.id}')">+ Add</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += `</div>`;
             });
-            orderText += `%0D%0ATotal: $${total.toFixed(2)}`;
 
-            // 2. Open email client with the order pre-filled
-            // Replace 'hamdy@example.com' with your actual email
-            window.location.href = `mailto:hamdy@example.com?subject=New Online Order&body=${orderText}`;
+            container.innerHTML = html;
         }
+
+        function addToCart(itemId) {
+            const product = MENU_ITEMS.find(i => i.id === itemId);
+            if (!product) return;
+
+            const selectEl = document.getElementById(`opt-${itemId}`);
+            const chosenOption = selectEl ? selectEl.value : "";
+            const key = `${itemId}__${chosenOption}`;
+
+            const existing = cart.find(c => c.key === key);
+            if (existing) {
+                existing.qty += 1;
+            } else {
+                cart.push({
+                    key,
+                    name: product.name,
+                    option: chosenOption,
+                    price: product.price,
+                    qty: 1
+                });
+            }
+
+            // Quick visual feedback on button
+            const btn = document.getElementById(`btn-${itemId}`);
+            if (btn) {
+                btn.textContent = "Added!";
+                btn.classList.add("added");
+                setTimeout(() => {
+                    btn.textContent = "+ Add";
+                    btn.classList.remove("added");
+                }, 700);
+            }
+
+            updateCartUI();
+        }
+
+        function changeQty(key, delta) {
+            const idx = cart.findIndex(c => c.key === key);
+            if (idx === -1) return;
+
+            cart[idx].qty += delta;
+            if (cart[idx].qty <= 0) {
+                cart.splice(idx, 1);
+            }
+            updateCartUI();
+            renderCartItems();
+        }
+
+        function updateCartUI() {
+            const totalQty = cart.reduce((sum, item) => sum + item.qty, 0);
+            const totalAmt = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+
+            document.getElementById("nav-count").innerText = totalQty;
+            document.getElementById("cart-count").innerText = totalQty;
+            document.getElementById("cart-total").innerText = totalAmt.toFixed(2);
+            document.getElementById("modal-total").innerText = totalAmt.toFixed(2);
+
+            const floatBar = document.getElementById("cart-float");
+            floatBar.style.display = totalQty > 0 ? "flex" : "none";
+        }
+
+        function renderCartItems() {
+            const listEl = document.getElementById("cart-items-list");
+            if (cart.length === 0) {
+                listEl.innerHTML = `<p style="color:#666; text-align:center; padding: 1rem 0;">Your order is currently empty.</p>`;
+                return;
+            }
+
+            listEl.innerHTML = cart.map(item => `
+                <div class="cart-item">
+                    <div class="cart-item-info">
+                        <div class="cart-item-title">${item.name}</div>
+                        ${item.option ? `<div class="cart-item-opt">Choice: ${item.option}</div>` : ""}
+                        <div class="cart-item-opt">$${item.price.toFixed(2)} each</div>
+                    </div>
+                    <div class="qty-controls">
+                        <button class="qty-btn" onclick="changeQty('${item.key}', -1)">-</button>
+                        <strong>${item.qty}</strong>
+                        <button class="qty-btn" onclick="changeQty('${item.key}', 1)">+</button>
+                    </div>
+                </div>
+            `).join("");
+        }
+
+        function openCart() {
+            renderCartItems();
+            document.getElementById("cart-modal").classList.add("open");
+        }
+
+        function closeCart() {
+            document.getElementById("cart-modal").classList.remove("open");
+        }
+
+        function closeCartOnBackdrop(e) {
+            if (e.target.id === "cart-modal") closeCart();
+        }
+
+        function buildOrderMessage() {
+            const name = document.getElementById("cust-name").value.trim() || "Guest";
+            const notes = document.getElementById("cust-notes").value.trim();
+            const totalAmt = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+
+            let lines = [
+                `Hello Hamdy's African Market! I would like to place an order:`,
+                ``,
+                `Customer: ${name}`,
+                `Items:`
+            ];
+
+            cart.forEach(item => {
+                const optText = item.option ? ` (${item.option})` : "";
+                const lineTotal = (item.price * item.qty).toFixed(2);
+                lines.push(`- ${item.qty}x ${item.name}${optText}: $${lineTotal}`);
+            });
+
+            lines.push(``);
+            lines.push(`Estimated Total: $${totalAmt.toFixed(2)}`);
+            if (notes) {
+                lines.push(`Notes: ${notes}`);
+            }
+
+            return lines.join("\n");
+        }
+
+        function sendOrder(channel) {
+            if (cart.length === 0) {
+                alert("Please add at least one item to your order first.");
+                return;
+            }
+
+            const message = buildOrderMessage();
+            const encoded = encodeURIComponent(message);
+
+            if (channel === "whatsapp") {
+                window.open(`https://wa.me/${STORE_PHONE}?text=${encoded}`, "_blank");
+            } else if (channel === "sms") {
+                // Uses standard SMS URI compatible with both iOS and Android
+                window.location.href = `sms:+${STORE_PHONE}?&body=${encoded}`;
+            } else if (channel === "email") {
+                const subject = encodeURIComponent("New Menu Order - Hamdy's African Market");
+                window.location.href = `mailto:${STORE_EMAIL}?subject=${subject}&body=${encoded}`;
+            }
+        }
+
+        function copyOrderText() {
+            if (cart.length === 0) {
+                alert("Please add at least one item to your order first.");
+                return;
+            }
+            const message = buildOrderMessage();
+            navigator.clipboard.writeText(message).then(() => {
+                alert("Order copied! You can paste it into any text message or WhatsApp chat.");
+            });
+        }
+
+        // Initial render on page load
+        renderMenu();
     </script>
 </body>
 </html>
