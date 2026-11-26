@@ -11,7 +11,7 @@
             --primary-dark: #b05515;
             --secondary: #006400;    /* Deep Green */
             --secondary-dark: #004b00;
-            --whatsapp: #25D366;
+            --whatsapp: #1da851;
             --sms: #007AFF;
             --bg-color: #FFF8E7;     /* Light Beige */
             --card-bg: #FFFFFF;
@@ -230,7 +230,7 @@
             background: white;
             width: 100%;
             max-width: 560px;
-            max-height: 90vh;
+            max-height: 92vh;
             border-radius: 16px 16px 0 0;
             padding: 20px;
             overflow-y: auto;
@@ -290,19 +290,41 @@
             font-size: 1rem;
         }
 
+        .form-section-label {
+            font-weight: 700;
+            font-size: 0.92rem;
+            color: var(--secondary);
+            margin: 14px 0 6px;
+            display: block;
+        }
+
         .order-fields {
-            margin-top: 14px;
             display: flex;
             flex-direction: column;
             gap: 10px;
         }
-        .order-fields input, .order-fields textarea {
+        .order-fields input, .order-fields select, .order-fields textarea {
             width: 100%;
             padding: 10px 12px;
             border: 1px solid #ccc;
             border-radius: 6px;
             font-size: 0.95rem;
             font-family: inherit;
+            background: #fff;
+        }
+
+        .payment-info-box {
+            background: #f4f8f4;
+            border: 1px solid #cde0cd;
+            border-radius: 8px;
+            padding: 10px 12px;
+            font-size: 0.88rem;
+            color: #234223;
+            margin-top: 4px;
+        }
+        .payment-info-box a {
+            color: var(--secondary);
+            font-weight: 700;
         }
 
         .cart-summary {
@@ -331,15 +353,43 @@
             cursor: pointer;
             text-align: center;
         }
-        .btn-whatsapp { background-color: #1da851; }
+        .btn-direct { background-color: var(--secondary); }
+        .btn-direct:hover { background-color: var(--secondary-dark); }
+        .btn-whatsapp { background-color: var(--whatsapp); }
         .btn-sms { background-color: var(--sms); }
-        .btn-email { background-color: var(--primary); }
         .btn-copy {
             background-color: #f1f1f1;
             color: #333;
             border: 1px solid #ccc;
             font-size: 0.9rem;
             padding: 10px;
+        }
+
+        .alt-divider {
+            text-align: center;
+            font-size: 0.82rem;
+            color: #777;
+            margin: 4px 0;
+        }
+
+        #order-status {
+            display: none;
+            padding: 14px;
+            border-radius: 8px;
+            margin-top: 12px;
+            font-size: 0.95rem;
+        }
+        #order-status.success {
+            display: block;
+            background: #e7f6ea;
+            border: 1px solid #9fd4aa;
+            color: #154d21;
+        }
+        #order-status.error {
+            display: block;
+            background: #fdecea;
+            border: 1px solid #f5b7b1;
+            color: #78281f;
         }
 
         /* --- HOURS & INFO --- */
@@ -425,9 +475,24 @@
 
             <div id="cart-items-list"></div>
 
+            <span class="form-section-label">1. Customer Information (Name or Phone Required)</span>
             <div class="order-fields">
-                <input type="text" id="cust-name" placeholder="Your Name (Required for pickup)">
+                <input type="text" id="cust-name" placeholder="Your Name">
+                <input type="tel" id="cust-phone" placeholder="Your Phone Number (e.g., 301-555-0199)">
                 <textarea id="cust-notes" rows="2" placeholder="Special instructions (e.g., extra spicy, pickup time)..."></textarea>
+            </div>
+
+            <span class="form-section-label">2. Payment Method</span>
+            <div class="order-fields">
+                <select id="payment-method" onchange="updatePaymentDetails()">
+                    <option value="Pay at Pickup (Cash or Card)">Pay at Pickup (Cash or Card)</option>
+                    <option value="Zelle">Zelle (Send to 631-835-8953)</option>
+                    <option value="Cash App">Cash App</option>
+                    <option value="Venmo">Venmo</option>
+                </select>
+                <div id="payment-details" class="payment-info-box">
+                    Pay in person when picking up your order at 19121 Maple Valley Cir.
+                </div>
             </div>
 
             <div class="cart-summary">
@@ -436,11 +501,16 @@
             </div>
 
             <div class="checkout-buttons">
-                <button class="send-btn btn-whatsapp" onclick="sendOrder('whatsapp')">Send Order via WhatsApp</button>
-                <button class="send-btn btn-sms" onclick="sendOrder('sms')">Send Order via SMS Text</button>
-                <button class="send-btn btn-email" onclick="sendOrder('email')">Send Order via Email</button>
-                <button class="send-btn btn-copy" onclick="copyOrderText()">Copy Order Summary to Clipboard</button>
+                <button id="direct-submit-btn" class="send-btn btn-direct" onclick="submitDirectOrder()">
+                    Submit Order Now (No App Login Required)
+                </button>
+                <div class="alt-divider">— OR send via your phone's messaging app —</div>
+                <button class="send-btn btn-whatsapp" onclick="sendOrder('whatsapp')">Send via WhatsApp</button>
+                <button class="send-btn btn-sms" onclick="sendOrder('sms')">Send via SMS Text</button>
+                <button class="send-btn btn-copy" onclick="copyOrderText()">Copy Order Summary</button>
             </div>
+
+            <div id="order-status"></div>
         </div>
     </div>
 
@@ -450,10 +520,21 @@
 
     <script>
         // ============================================================
-        // BUSINESS CONTACT SETTINGS
+        // BUSINESS CONTACT & PAYMENT SETTINGS
         // ============================================================
         const STORE_PHONE = "16318358953"; // Country code + 10-digit number
-        const STORE_EMAIL = "hamdiya83@gmail.com";
+
+        // Optional: Paste your free Formspree endpoint URL below (e.g., "https://formspree.io/f/xyzabcd")
+        // so "Submit Order Now" sends directly from the browser without opening WhatsApp or SMS.
+        const FORMSPREE_ENDPOINT = "";
+
+        // Update with your actual Zelle / Cash App / Venmo details:
+        const PAYMENT_INFO = {
+            "Pay at Pickup (Cash or Card)": "Pay in person when picking up your order at 19121 Maple Valley Cir.",
+            "Zelle": "Send Zelle payment to <strong>(631) 835-8953</strong> and include your Name in the memo.",
+            "Cash App": "Send Cash App payment to <strong>$HamdysMarket</strong> (update tag in code) or pay at pickup.",
+            "Venmo": "Send Venmo payment to <strong>@HamdysMarket</strong> (update handle in code) or pay at pickup."
+        };
 
         // ============================================================
         // MENU DATA — Add, edit, or remove items below anytime!
@@ -627,7 +708,7 @@
         // APP LOGIC
         // ============================================================
         let currentCategory = "All";
-        let cart = []; // Each item: { key, name, option, price, qty }
+        let cart = [];
 
         function setCategory(category, btn) {
             currentCategory = category;
@@ -653,7 +734,6 @@
                 return;
             }
 
-            // Group by category in display order
             const categories = ["Main Dishes", "Side Dishes & Add-ons", "Drinks and Beverages"];
             let html = "";
 
@@ -712,7 +792,6 @@
                 });
             }
 
-            // Quick visual feedback on button
             const btn = document.getElementById(`btn-${itemId}`);
             if (btn) {
                 btn.textContent = "Added!";
@@ -774,8 +853,14 @@
             `).join("");
         }
 
+        function updatePaymentDetails() {
+            const method = document.getElementById("payment-method").value;
+            document.getElementById("payment-details").innerHTML = PAYMENT_INFO[method] || "";
+        }
+
         function openCart() {
             renderCartItems();
+            document.getElementById("order-status").style.display = "none";
             document.getElementById("cart-modal").classList.add("open");
         }
 
@@ -787,15 +872,35 @@
             if (e.target.id === "cart-modal") closeCart();
         }
 
+        function validateCustomerInfo() {
+            if (cart.length === 0) {
+                alert("Please add at least one item to your order first.");
+                return false;
+            }
+            const name = document.getElementById("cust-name").value.trim();
+            const phone = document.getElementById("cust-phone").value.trim();
+            if (!name && !phone) {
+                alert("Please enter your Name or Phone Number so we can identify your order.");
+                document.getElementById("cust-name").focus();
+                return false;
+            }
+            return true;
+        }
+
         function buildOrderMessage() {
-            const name = document.getElementById("cust-name").value.trim() || "Guest";
+            const name = document.getElementById("cust-name").value.trim() || "Not provided";
+            const phone = document.getElementById("cust-phone").value.trim() || "Not provided";
             const notes = document.getElementById("cust-notes").value.trim();
+            const payment = document.getElementById("payment-method").value;
             const totalAmt = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
 
             let lines = [
-                `Hello Hamdy's African Market! I would like to place an order:`,
+                `Hello Hamdy's African Market! New Order:`,
                 ``,
-                `Customer: ${name}`,
+                `Name: ${name}`,
+                `Phone: ${phone}`,
+                `Payment Method: ${payment}`,
+                ``,
                 `Items:`
             ];
 
@@ -814,11 +919,64 @@
             return lines.join("\n");
         }
 
-        function sendOrder(channel) {
-            if (cart.length === 0) {
-                alert("Please add at least one item to your order first.");
+        async function submitDirectOrder() {
+            if (!validateCustomerInfo()) return;
+
+            const statusEl = document.getElementById("order-status");
+            const btn = document.getElementById("direct-submit-btn");
+            const orderSummary = buildOrderMessage();
+            const totalAmt = cart.reduce((sum, item) => sum + (item.price * item.qty), 0).toFixed(2);
+
+            if (!FORMSPREE_ENDPOINT) {
+                // Fallback confirmation screen when Formspree endpoint is not yet configured
+                statusEl.className = "success";
+                statusEl.style.display = "block";
+                statusEl.innerHTML = `
+                    <strong>Order Summary Ready!</strong><br>
+                    To send without logging into WhatsApp or SMS, tap <strong>Copy Order Summary</strong> below and text it to <strong>(631) 835-8953</strong>, or call us directly.<br><br>
+                    <em>(Store Owner Tip: Add a free Formspree URL in the code to receive instant direct submissions here.)</em>
+                `;
                 return;
             }
+
+            btn.disabled = true;
+            btn.textContent = "Sending Order...";
+
+            try {
+                const response = await fetch(FORMSPREE_ENDPOINT, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json", "Accept": "application/json" },
+                    body: JSON.stringify({
+                        customer_name: document.getElementById("cust-name").value.trim(),
+                        customer_phone: document.getElementById("cust-phone").value.trim(),
+                        payment_method: document.getElementById("payment-method").value,
+                        total: `$${totalAmt}`,
+                        order_details: orderSummary
+                    })
+                });
+
+                if (response.ok) {
+                    statusEl.className = "success";
+                    statusEl.style.display = "block";
+                    statusEl.innerHTML = `<strong>Order Received!</strong> Thank you. We have received your order for <strong>$${totalAmt}</strong> and will confirm shortly.`;
+                    cart = [];
+                    updateCartUI();
+                    renderCartItems();
+                } else {
+                    throw new Error("Submission failed");
+                }
+            } catch (err) {
+                statusEl.className = "error";
+                statusEl.style.display = "block";
+                statusEl.innerHTML = `Could not submit automatically. Please use <strong>Send via WhatsApp</strong>, <strong>Send via SMS Text</strong>, or call <strong>(631) 835-8953</strong>.`;
+            } finally {
+                btn.disabled = false;
+                btn.textContent = "Submit Order Now (No App Login Required)";
+            }
+        }
+
+        function sendOrder(channel) {
+            if (!validateCustomerInfo()) return;
 
             const message = buildOrderMessage();
             const encoded = encodeURIComponent(message);
@@ -826,19 +984,12 @@
             if (channel === "whatsapp") {
                 window.open(`https://wa.me/${STORE_PHONE}?text=${encoded}`, "_blank");
             } else if (channel === "sms") {
-                // Uses standard SMS URI compatible with both iOS and Android
                 window.location.href = `sms:+${STORE_PHONE}?&body=${encoded}`;
-            } else if (channel === "email") {
-                const subject = encodeURIComponent("New Menu Order - Hamdy's African Market");
-                window.location.href = `mailto:${STORE_EMAIL}?subject=${subject}&body=${encoded}`;
             }
         }
 
         function copyOrderText() {
-            if (cart.length === 0) {
-                alert("Please add at least one item to your order first.");
-                return;
-            }
+            if (!validateCustomerInfo()) return;
             const message = buildOrderMessage();
             navigator.clipboard.writeText(message).then(() => {
                 alert("Order copied! You can paste it into any text message or WhatsApp chat.");
